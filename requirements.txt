@@ -1,2 +1,5 @@
 Django==1.9
+django-embed-video==1.1.0
+Pillow==3.4.2
 pkg-resources==0.0.0
+requests==2.12.3
