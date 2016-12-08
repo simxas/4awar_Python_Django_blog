@@ -4,11 +4,11 @@
     {% if instance.image %}
         <img src="{{ instance.image.url }}" />
     {% endif %}
-    {% if instance.video %}
-        {% video instance.video as my_video %}
-            URL: {{ my_video.url }}
-            Thumbnail: {{ my_video.thumbnail }}
-            Backend: {{ my_video.backend }}
+    {% if instance.video_url %}
+        {% video instance.video_url as my_video %}
+            {# URL: {{ my_video.url }}#}
+            {# Thumbnail: {{ my_video.thumbnail }}#}
+            {# Backend: {{ my_video.backend }}#}
             {% video my_video 'small' %}
         {% endvideo %}
     {% endif %}

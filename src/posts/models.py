@@ -19,7 +19,7 @@ class Post(models.Model):
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to= upload_location, null=True, blank=True, width_field="width_field", height_field="height_field")
-    video = EmbedVideoField(null=True, blank=True)  # same like models.URLField()
+    video_url = EmbedVideoField(null=True, blank=True)  # same like models.URLField()
     height_field = models.IntegerField(default=0)
     width_field = models.IntegerField(default=0)
     content = models.TextField()

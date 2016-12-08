@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post
+from .forms import PostForm
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.utils import timezone
@@ -53,3 +54,19 @@ def post_detail(request, slug):
         "instance": instance,
     }
     return render(request, "post_detail.html", context)
+
+# CREATE POST
+def post_create(request):
+    if not request.user.is_staff or not request.user.is_superuser:
+        raise Http404
+
+    form = PostForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        return HttpResponseRedirect(instance.get_absolute_url())
+    context = {
+        "form": form,
+    }
+    return render(request, "post_form.html", context)
