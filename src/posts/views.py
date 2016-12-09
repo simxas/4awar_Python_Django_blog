@@ -4,6 +4,8 @@ from .models import Post
 from .forms import PostForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.conf import settings
+import shutil
 from django.utils import timezone
 
 # LIST ALL POSTS
@@ -94,5 +96,9 @@ def post_delete(request, slug=None):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
+    # removing associated image
+    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.slug)
+    shutil.rmtree(dest, ignore_errors=True)
+    
     instance.delete()
     return redirect("posts:list")
