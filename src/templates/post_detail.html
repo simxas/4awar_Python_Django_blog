@@ -1,17 +1,26 @@
+{% extends "base.html" %}
 {% load embed_video_tags %}
 
-<div>
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+<div class="col-sm-6 col-sm-offset-2">
     {% if instance.video_url %}
         {% video instance.video_url as my_video %}
-            {# URL: {{ my_video.url }}#}
-            {# Thumbnail: {{ my_video.thumbnail }}#}
-            {# Backend: {{ my_video.backend }}#}
             {% video my_video 'small' %}
         {% endvideo %}
     {% elif instance.image %}
-        <img src="{{ instance.image.url }}" />
+        <img src="{{ instance.image.url }}" class="img-responsive" />
     {% endif %}
-    <h1>{{ instance.title }} <small>{% if instance.draft %}<span style="color:red;">Draft</span>{% endif %} {{ instance.publish }}</small></h1>
+
+    <h1>
+        {{ instance.title }}
+        <br />
+        <small>{% if instance.draft %}<span style="color:red;">Draft |</span>{% endif %}
+        {% if instance.publish > today %}Future Post{% endif %} {{ instance.publish }}</small>
+    </h1>
 
     {% if instance.user.get_full_name %}
         <p>
@@ -26,16 +35,18 @@
     </p>
     -->
     <hr />
-    <h3>Posto content:</h3>
-        <div>
-            <p>
-                {{ instance.content|linebreaks }}
-            </p>
-            <hr />
-            <br />
+        <div class="row">
+            <div class="col-sm-12">
+                <p>
+                    {{ instance.content|linebreaks }}
+                </p>
+                <hr />
+                <br />
+            </div>
         </div>
     <!-- Facebook komentarai prideti-->
     <!--
     <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
     -->
 </div>
+{% endblock content %}

@@ -47,13 +47,15 @@ def post_list(request):
 
 # CHECK POST DETAILS
 def post_detail(request, slug):
+    today = timezone.now().date()
     instance = get_object_or_404(Post, slug=slug)
     if instance.draft or instance.publish > timezone.now().date():
         if not request.user.is_staff or not request.user.is_superuser:
             raise Http404
     context = {
-        "title": "Detail",
+        "title": instance.title,
         "instance": instance,
+        "today": today,
     }
     return render(request, "post_detail.html", context)
 
@@ -99,6 +101,6 @@ def post_delete(request, slug=None):
     # removing associated image
     dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.slug)
     shutil.rmtree(dest, ignore_errors=True)
-    
+
     instance.delete()
     return redirect("posts:list")
