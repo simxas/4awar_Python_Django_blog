@@ -1,9 +1,6 @@
 {% load embed_video_tags %}
 
 <div>
-    {% if instance.image %}
-        <img src="{{ instance.image.url }}" />
-    {% endif %}
     {% if instance.video_url %}
         {% video instance.video_url as my_video %}
             {# URL: {{ my_video.url }}#}
@@ -11,6 +8,8 @@
             {# Backend: {{ my_video.backend }}#}
             {% video my_video 'small' %}
         {% endvideo %}
+    {% elif instance.image %}
+        <img src="{{ instance.image.url }}" />
     {% endif %}
     <h1>{{ instance.title }} <small>{% if instance.draft %}<span style="color:red;">Draft</span>{% endif %} {{ instance.publish }}</small></h1>
 
