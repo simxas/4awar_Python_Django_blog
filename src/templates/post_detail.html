@@ -20,14 +20,12 @@
         <br />
         <small>{% if instance.draft %}<span style="color:red;">Draft |</span>{% endif %}
         {% if instance.publish > today %}Future Post{% endif %} {{ instance.publish }}</small>
+        
+        {% if request.user.is_authenticated %}
+            <a href="{{ instance.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+        {% endif %}
     </h1>
 
-    {% if instance.user.get_full_name %}
-        <p>
-            Author: {{ instance.user.get_full_name }}
-        </p>
-
-    {% endif %}
     <!-- Facebook like and share -->
     <p>
         <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>

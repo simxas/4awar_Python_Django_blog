@@ -4,10 +4,6 @@
 {% block content %}
 <div class="col-sm-8 col-sm-offset-2">
     <h1>Welcome to 4aWar blog</h1>
-    <form method="GET" action="">
-            <input type="text" name="q" placeholder="Search posts" value="{{ request.GET.q }}" />
-            <input type="submit" value="Search" />
-    </form>
     <hr />
     <div class="row">
         {% for obj in object_list %}
@@ -30,14 +26,12 @@
                                         <small> | VIDEO inside a post</small>
                                     {% endif %}
                                 </h3>
-                                {% if obj.user.get_full_name %}
-                                    <p>
-                                        Author: {{ obj.user.get_full_name }}
-                                    </p>
-                                {% endif %}
                                 <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
                                 <p>
                                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a>
+                                    {% if request.user.is_authenticated %}
+                                        <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>

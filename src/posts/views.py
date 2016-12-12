@@ -56,6 +56,7 @@ def post_detail(request, slug):
         "title": instance.title,
         "instance": instance,
         "today": today,
+        "slug": slug,
     }
     return render(request, "post_detail.html", context)
 
@@ -67,7 +68,7 @@ def post_create(request):
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         instance = form.save(commit=False)
-        instance.user = request.user
+        instance.author = request.user
         instance.save()
         return HttpResponseRedirect(instance.get_absolute_url())
     context = {
