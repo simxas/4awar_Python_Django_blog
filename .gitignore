@@ -1,4 +1,5 @@
 pip-selfcheck.json
+src/pr4awar/settings.py
 bin/*
 include/*
 lib/*
