@@ -20,9 +20,10 @@
         <br />
         <small>{% if instance.draft %}<span style="color:red;">Draft |</span>{% endif %}
         {% if instance.publish > today %}Future Post{% endif %} {{ instance.publish }}</small>
-        
+
         {% if request.user.is_authenticated %}
             <a href="{{ instance.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+            <a href="{{ instance.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
         {% endif %}
     </h1>
 
