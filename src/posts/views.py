@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Post
+from .models import Post, Category
 from .forms import PostForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -59,6 +59,25 @@ def post_detail(request, slug):
         "slug": slug,
     }
     return render(request, "post_detail.html", context)
+
+def post_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    posts = Post.objects.filter(category=category)
+
+    query = request.GET.get("q")
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(author__first_name__icontains=query) |
+            Q(author__last_name__icontains=query)
+            ).distinct()
+
+    context = {
+        "title": category.title,
+        "posts": posts,
+    }
+    return render(request, "post_category.html", context)
 
 # CREATE POST
 def post_create(request):

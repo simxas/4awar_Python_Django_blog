@@ -40,6 +40,13 @@
                 </p>
                 <hr />
                 <br />
+                {% if instance.category %}
+                    <p>{{ instance.category }}</p>
+                {% else %}
+                    <p>
+                        Nera kategorijos
+                    </p>
+                {% endif %}
             </div>
         </div>
     <!-- Facebook comments-->
