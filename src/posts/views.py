@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Post, Category
+from .models import Post, Category, CategoryToPost
 from .forms import PostForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -62,7 +62,7 @@ def post_detail(request, slug):
 
 def post_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(category=category)
+    posts = Post.objects.filter(categories=category)
 
     query = request.GET.get("q")
     if query:
@@ -89,6 +89,9 @@ def post_create(request):
         instance = form.save(commit=False)
         instance.author = request.user
         instance.save()
+        for category in form.cleaned_data.get('categories'):
+            categoryToPost = CategoryToPost(post=instance, category=category)
+            categoryToPost.save()
         return HttpResponseRedirect(instance.get_absolute_url())
     context = {
         "form": form,
@@ -104,6 +107,9 @@ def post_update(request, slug):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
+        for category in form.cleaned_data.get('categories'):
+            categoryToPost = CategoryToPost(post=instance, category=category)
+            categoryToPost.save()
         return HttpResponseRedirect(instance.get_absolute_url())
 
     context = {

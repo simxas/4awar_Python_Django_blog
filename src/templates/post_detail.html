@@ -40,13 +40,17 @@
                 </p>
                 <hr />
                 <br />
-                {% if instance.category %}
-                    <p>{{ instance.category }}</p>
+                {% if instance.categories %}
+                    {% for category in instance.categories.all %}
+                        <a href="{{ category.get_absolute_url }}">{{ category }}</a>
+                    {% endfor %}
                 {% else %}
                     <p>
-                        Nera kategorijos
+                        No Categories
                     </p>
                 {% endif %}
+                <br />
+                <br />
             </div>
         </div>
     <!-- Facebook comments-->

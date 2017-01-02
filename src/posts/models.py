@@ -40,7 +40,7 @@ class Post(models.Model):
     publish = models.DateField(auto_now=False, auto_now_add=False)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
-    category = models.ForeignKey(Category, null=True, blank=True)
+    categories = models.ManyToManyField(Category, blank=True, null=True, through='CategoryToPost')
 
     objects = PostManager()
 
@@ -53,6 +53,10 @@ class Post(models.Model):
     class Meta:
         ordering = ["-timestamp", "-updated"]
 
+class CategoryToPost(models.Model):
+    post = models.ForeignKey(Post)
+    category = models.ForeignKey(Category)
+
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)
     if new_slug is not None:
@@ -64,24 +68,8 @@ def create_slug(instance, new_slug=None):
         return create_slug(instance, new_slug=new_slug)
     return slug
 
-# def create_category_slug(instance, new_slug=None):
-#     slug = slugify(instance.title)
-#     if new_slug is not None:
-#         slug = new_slug
-#     qs = Category.objects.filter(slug=slug).order_by("-id")
-#     exists = qs.exists()
-#     if exists:
-#         new_slug = "{0}-{1}".format(slug, qs.first().id)
-#         return create_slug(instance, new_slug=new_slug)
-#     return slug
-
 def pre_save_post_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
 
-# def pre_save_category_receiver(sender, instance, *args, **kwargs):
-#     if not instance.slug:
-#         instance.slug = create_category_slug(instance)
-
 pre_save.connect(pre_save_post_receiver, sender=Post)
-# pre_save.connect(pre_save_category_receiver, sender=Category)

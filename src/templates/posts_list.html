@@ -27,13 +27,14 @@
                                     {% endif %}
                                 </h3>
                                 <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
-                                {% if obj.category %}
-                                    <a href="{{ obj.category.get_absolute_url }}">{{ obj.category.title }}</a>
-                                {% else %}
-                                    <p>
-                                        Nera kategorijos
-                                    </p>
+                                <br />
+                                {% if obj.categories %}
+                                    {% for category in obj.categories.all %}
+                                        <a href="{{ category.get_absolute_url }}">{{ category }}</a>
+                                    {% endfor %}
                                 {% endif %}
+                                <br />
+                                <br />
                                 <p>
                                     <a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a>
                                     {% if request.user.is_authenticated %}
