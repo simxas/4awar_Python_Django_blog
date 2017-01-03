@@ -2,6 +2,7 @@ from django import forms
 from .models import Post, Category
 
 class PostForm(forms.ModelForm):
+
     categories = Category.objects.all()
     categories_list = []
     for category in categories:
@@ -22,3 +23,6 @@ class PostForm(forms.ModelForm):
             "draft",
             "publish",
         )
+
+class UpdateForm(forms.Form):
+    title = forms.CharField(label='Title', max_length=120)
