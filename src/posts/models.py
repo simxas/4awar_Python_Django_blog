@@ -56,6 +56,8 @@ class Post(models.Model):
 class CategoryToPost(models.Model):
     post = models.ForeignKey(Post)
     category = models.ForeignKey(Category)
+    class Meta:
+         unique_together = ('post', 'category')
 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)

@@ -90,7 +90,11 @@ def post_create(request):
         instance.author = request.user
         instance.save()
         for category in form.cleaned_data.get('categories'):
-            categoryToPost = CategoryToPost(post=instance, category=category)
+            # categoryToPost = CategoryToPost(post=instance, category=category)
+            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
+            catg = get_object_or_404(Category, title=category)
+            categoryToPost = CategoryToPost(post=instance, category=catg)
+
             categoryToPost.save()
         return HttpResponseRedirect(instance.get_absolute_url())
     context = {
@@ -106,10 +110,25 @@ def post_update(request, slug):
     form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     if form.is_valid():
         instance = form.save(commit=False)
-        instance.save()
+
+        # instance.save()
+
         for category in form.cleaned_data.get('categories'):
-            categoryToPost = CategoryToPost(post=instance, category=category)
+
+            # for categ in instance.categories.all():
+            #     if categ.title == category:
+            #         categ = category
+            #         print(categ)
+            #
+            # print("======================")
+            # print(category)
+            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
+            catg = get_object_or_404(Category, title=category)
+            categoryToPost = CategoryToPost(post=instance, category=catg)
+
             categoryToPost.save()
+        instance.save()
+
         return HttpResponseRedirect(instance.get_absolute_url())
 
     context = {
