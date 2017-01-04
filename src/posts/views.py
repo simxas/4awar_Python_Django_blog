@@ -136,7 +136,7 @@ def post_update(request, slug):
     # TEST CODE================
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = UpdateForm(request.POST)
+        form = UpdateForm(request.POST, categories=(("a", "b"), ("a", "b")))
         # check whether it's valid:
         if form.is_valid():
             instance = form.save(commit=False)

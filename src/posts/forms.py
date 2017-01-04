@@ -25,4 +25,18 @@ class PostForm(forms.ModelForm):
         )
 
 class UpdateForm(forms.Form):
-    title = forms.CharField(label='Title', max_length=120)
+    title = forms.CharField(label="Title", max_length=120)
+    categories = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False,
+                                         choices=[])
+    content = forms.CharField(label="Content", required=False, widget=forms.Textarea)
+    image = forms.ImageField(label="Image")
+    video_url = forms.URLField(required=False)
+    draft = forms.BooleanField()
+    publish = forms.DateField(widget=forms.SelectDateWidget())
+
+    # categories = forms.ModelChoiceField(queryset=None)
+
+    def __init__(self, categories):
+        super(UpdateForm, self).__init__()
+        # self.fields['categories'].queryset = Item.objects.filter(id=item_id)
+        self.fields['categories'].choices = categories
