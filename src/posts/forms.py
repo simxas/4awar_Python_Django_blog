@@ -11,9 +11,9 @@ class PostForm(forms.ModelForm):
     tuple(categories_list)
     categories = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                          choices=categories_list)
+    publish = forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
         model = Post
-        # fields = '__all__'
         fields = (
             "title",
             "categories",
@@ -36,7 +36,9 @@ class UpdateForm(forms.Form):
 
     # categories = forms.ModelChoiceField(queryset=None)
 
-    def __init__(self, categories):
-        super(UpdateForm, self).__init__()
+    # def __init__(self):
+        # super(UpdateForm, self).__init__()
         # self.fields['categories'].queryset = Item.objects.filter(id=item_id)
-        self.fields['categories'].choices = categories
+        # self.fields['categories'].choices = categories
+        # print("===============================")
+        # print(inst)

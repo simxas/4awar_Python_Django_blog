@@ -1,7 +1,7 @@
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Category, CategoryToPost
-from .forms import PostForm, UpdateForm
+from .forms import PostForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.conf import settings
@@ -107,56 +107,19 @@ def post_update(request, slug):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
-    # form = PostForm(request.POST or None, request.FILES or None, instance=instance)
-    '''
-    form = UpdateForm(request.POST or None)
+    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
 
     if form.is_valid():
         instance = form.save(commit=False)
-        # print("===================")
-        # print(form.cleaned_data.get('categories'))
-        # instance.save()
-
+        instance.save()
         for category in form.cleaned_data.get('categories'):
-
-            # for categ in instance.categories.all():
-            #     if categ.title == category:
-            #         categ = category
-            #         print(categ)
-            #
-            # print("======================")
-            # print(category)
             # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
             categoryToPost = CategoryToPost(post=instance, category=catg)
 
             categoryToPost.save()
-        instance.save()
-    '''
-    # TEST CODE================
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = UpdateForm(request.POST, categories=(("a", "b"), ("a", "b")))
-        # check whether it's valid:
-        if form.is_valid():
-            instance = form.save(commit=False)
-            for category in form.cleaned_data.get('categories'):
-                # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
-                catg = get_object_or_404(Category, title=category)
-                categoryToPost = CategoryToPost(post=instance, category=catg)
-                categoryToPost.save()
-            instance.save()
-            return HttpResponseRedirect(instance.get_absolute_url())
 
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        data = {'title': 'hello'}
-        form = UpdateForm(data)
-    # TEST CODE================
-
-
-
-        # return HttpResponseRedirect(instance.get_absolute_url())
+        return HttpResponseRedirect(instance.get_absolute_url())
 
     context = {
         "title": "Detail",
