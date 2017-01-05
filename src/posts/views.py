@@ -1,7 +1,7 @@
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Category, CategoryToPost
-from .forms import PostForm
+from .forms import PostForm, UpdateForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.conf import settings
@@ -107,7 +107,8 @@ def post_update(request, slug):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
-    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
+    # form = PostForm(request.POST or None, request.FILES or None, instance=instance)
+    form = UpdateForm(request.POST or None, request.FILES or None, instance=instance)
 
     if form.is_valid():
         instance = form.save(commit=False)
