@@ -36,8 +36,13 @@ class UpdateForm(forms.ModelForm):
         instance = kwargs["instance"]
         inst_categories = instance.categories.all()
         categories_list = []
+        rm_categories_list = []
         # check if post has already some cateogires assigned to it
         if len(inst_categories) != 0:
+            for catg in inst_categories:
+                list_b = [catg.title, catg.title]
+                rm_categories_list.append(list_b)
+
             for category in all_categories:
                 # if category wont exist in assigned categories list then add it to the list to show in form
                 if category not in inst_categories:
@@ -49,10 +54,13 @@ class UpdateForm(forms.ModelForm):
                 list_a = [category.title, category.title]
                 categories_list.append(list_a)
         tuple(categories_list)
+        tuple(rm_categories_list)
         super(UpdateForm, self).__init__(*args, **kwargs)
         self.fields["title"] = forms.CharField(label="Title", max_length=120)
         self.fields["categories"] = forms.MultipleChoiceField(label="Add Categories",
             widget=forms.CheckboxSelectMultiple, required=False, choices=categories_list)
+        self.fields["rm_categories"] = forms.MultipleChoiceField(label="Remove categories",
+            widget=forms.CheckboxSelectMultiple, required=False, choices=rm_categories_list)
         self.fields["content"] = forms.CharField(label="Content", required=False, widget=forms.Textarea)
         self.fields["image"] = forms.ImageField(label="Image")
         self.fields["video_url"] = forms.URLField(required=False)

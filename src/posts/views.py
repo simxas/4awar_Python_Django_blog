@@ -120,6 +120,11 @@ def post_update(request, slug):
 
             categoryToPost.save()
 
+        for cat in form.cleaned_data.get('rm_categories'):
+            category_rm = get_object_or_404(Category, title=cat)
+            categoryToPost_rm = CategoryToPost.objects.get(post=instance, category=category_rm)
+            categoryToPost_rm.delete()
+
         return HttpResponseRedirect(instance.get_absolute_url())
 
     context = {
