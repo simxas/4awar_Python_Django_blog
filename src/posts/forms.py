@@ -36,25 +36,23 @@ class UpdateForm(forms.ModelForm):
         instance = kwargs["instance"]
         inst_categories = instance.categories.all()
         categories_list = []
+        # check if post has already some cateogires assigned to it
         if len(inst_categories) != 0:
-            print("=======================================")
             for category in all_categories:
-                for category2 in inst_categories:
-                    if category2.title != category.title:
-                        print(category2.title)
-                        list_a = [category.title, category.title]
-                        categories_list.append(list_a)
-                    else:
-                        pass
+                # if category wont exist in assigned categories list then add it to the list to show in form
+                if category not in inst_categories:
+                    # needs to be done in order to create a tuple later
+                    list_a = [category.title, category.title]
+                    categories_list.append(list_a)
         else:
             for category in all_categories:
-                print("TUSCIA, postas neturi kategoriju")
                 list_a = [category.title, category.title]
                 categories_list.append(list_a)
         tuple(categories_list)
         super(UpdateForm, self).__init__(*args, **kwargs)
         self.fields["title"] = forms.CharField(label="Title", max_length=120)
-        self.fields["categories"] = forms.MultipleChoiceField(label="Add Categories", widget=forms.CheckboxSelectMultiple, required=False, choices=categories_list)
+        self.fields["categories"] = forms.MultipleChoiceField(label="Add Categories",
+            widget=forms.CheckboxSelectMultiple, required=False, choices=categories_list)
         self.fields["content"] = forms.CharField(label="Content", required=False, widget=forms.Textarea)
         self.fields["image"] = forms.ImageField(label="Image")
         self.fields["video_url"] = forms.URLField(required=False)
