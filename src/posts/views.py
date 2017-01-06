@@ -109,8 +109,13 @@ def post_update(request, slug):
     instance = get_object_or_404(Post, slug=slug)
     # form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     form = UpdateForm(request.POST or None, request.FILES or None, instance=instance)
-
+    # destination of current image
+    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.slug)
     if form.is_valid():
+        # if true then deleting old image
+        if form.cleaned_data.get('image_rm'):
+            instance.image = ""
+            shutil.rmtree(dest, ignore_errors=True)
         instance = form.save(commit=False)
         instance.save()
         for category in form.cleaned_data.get('categories'):

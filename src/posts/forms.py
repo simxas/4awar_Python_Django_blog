@@ -10,7 +10,7 @@ class PostForm(forms.ModelForm):
         categories_list.append(list_a)
     tuple(categories_list)
     categories = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                         choices=categories_list)
+                                         choices=categories_list, required=False)
     publish = forms.DateField(widget=forms.SelectDateWidget())
     class Meta:
         model = Post
@@ -63,6 +63,7 @@ class UpdateForm(forms.ModelForm):
             widget=forms.CheckboxSelectMultiple, required=False, choices=rm_categories_list)
         self.fields["content"] = forms.CharField(label="Content", required=False, widget=forms.Textarea)
         self.fields["image"] = forms.ImageField(label="Image")
+        self.fields["image_rm"] = forms.BooleanField(label="Remove current Image", required=False)
         self.fields["video_url"] = forms.URLField(required=False)
         self.fields["draft"] = forms.BooleanField()
         self.fields["publish"] = forms.DateField(widget=forms.SelectDateWidget())
