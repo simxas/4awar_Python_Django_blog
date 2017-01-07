@@ -116,6 +116,9 @@ def post_update(request, slug):
         if form.cleaned_data.get('image_rm'):
             instance.image = ""
             shutil.rmtree(dest, ignore_errors=True)
+        # if new image uploaded
+        if form.cleaned_data.get('image'):
+            instance.image = form.cleaned_data.get('image')
         instance = form.save(commit=False)
         instance.save()
         for category in form.cleaned_data.get('categories'):
