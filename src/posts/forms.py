@@ -65,5 +65,5 @@ class UpdateForm(forms.ModelForm):
         self.fields["image"] = forms.ImageField(label="Image")
         self.fields["image_rm"] = forms.BooleanField(label="Remove current Image", required=False)
         self.fields["video_url"] = forms.URLField(required=False)
-        self.fields["draft"] = forms.BooleanField()
+        self.fields["draft"] = forms.BooleanField(required=False)
         self.fields["publish"] = forms.DateField(widget=forms.SelectDateWidget())
