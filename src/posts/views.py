@@ -104,6 +104,7 @@ def post_create(request):
 
 # UPDATE POST
 def post_update(request, slug):
+    remove_image = False
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
@@ -114,10 +115,11 @@ def post_update(request, slug):
     if form.is_valid():
         # if true then deleting old image
         if form.cleaned_data.get('image_rm'):
+            remove_image = True
             instance.image = ""
             shutil.rmtree(dest, ignore_errors=True)
         # if new image uploaded
-        if form.cleaned_data.get('image'):
+        if form.cleaned_data.get('image') and remove_image == False:
             instance.image = form.cleaned_data.get('image')
         instance = form.save(commit=False)
         instance.save()
