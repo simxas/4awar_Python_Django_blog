@@ -12,6 +12,7 @@ from django.utils import timezone
 def post_list(request):
     today = timezone.now().date()
     queryset_list = Post.objects.active()
+    categories_list = Category.objects.all()
     if request.user.is_staff or request.user.is_superuser:
         queryset_list = Post.objects.all()
     # using this for search
@@ -24,7 +25,7 @@ def post_list(request):
             Q(author__last_name__icontains=query)
             ).distinct()
 
-    paginator = Paginator(queryset_list, 10)
+    paginator = Paginator(queryset_list, 3)
     page_request_var = "page"
     page = request.GET.get(page_request_var)
     try:
@@ -38,6 +39,7 @@ def post_list(request):
 
     context = {
         "object_list": queryset,
+        "categories_list": categories_list,
         "title": "Prisijunges",
         "page_request_var": page_request_var,
         "today": today,

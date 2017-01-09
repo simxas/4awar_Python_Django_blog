@@ -36,12 +36,7 @@
                     <li><a href="{% url 'posts:create' %}">Create new Post</a></li>
                 {% endif %}
 
-                <form class='navbar-form navbar-right' method='GET' >
-                    <div class='form-group'>
-                        <input type="text" name="q" placeholder="Search posts" value="{{ request.GET.q }}" />
-                    </div>
-                    <input type="submit" value="Search" />
-                </form>
+                
             </ul>
 
         </div><!--/.nav-collapse -->
