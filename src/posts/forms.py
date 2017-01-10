@@ -62,7 +62,7 @@ class UpdateForm(forms.ModelForm):
         self.fields["rm_categories"] = forms.MultipleChoiceField(label="Remove categories",
             widget=forms.CheckboxSelectMultiple, required=False, choices=rm_categories_list)
         self.fields["content"] = forms.CharField(label="Content", required=False, widget=forms.Textarea)
-        self.fields["image"] = forms.ImageField(label="Image")
+        self.fields["image"] = forms.ImageField(label="Image", required=False)
         self.fields["image_rm"] = forms.BooleanField(label="Remove current Image", required=False)
         self.fields["video_url"] = forms.URLField(required=False)
         self.fields["draft"] = forms.BooleanField(required=False)

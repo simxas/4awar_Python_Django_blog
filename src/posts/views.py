@@ -51,32 +51,47 @@ def post_list(request):
 def post_detail(request, slug):
     today = timezone.now().date()
     instance = get_object_or_404(Post, slug=slug)
+    categories_list = Category.objects.all()
     if instance.draft or instance.publish > timezone.now().date():
         if not request.user.is_staff or not request.user.is_superuser:
             raise Http404
     context = {
         "title": instance.title,
         "instance": instance,
+        "categories_list": categories_list,
         "today": today,
         "slug": slug,
     }
     return render(request, "post_detail.html", context)
 
+# POSTS by CATEGORY
 def post_category(request, slug):
+    # queryset_list = Post.objects.active()
+    # categories_list = Category.objects.all()
+    # if request.user.is_staff or request.user.is_superuser:
+    #     queryset_list = Post.objects.all()
+
+
     category = get_object_or_404(Category, slug=slug)
+    categories_list = Category.objects.all()
     posts = Post.objects.filter(categories=category)
 
-    query = request.GET.get("q")
-    if query:
-        posts = posts.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(author__first_name__icontains=query) |
-            Q(author__last_name__icontains=query)
-            ).distinct()
+    paginator = Paginator(posts, 3) # Show 25 contacts per page
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        posts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        posts = paginator.page(paginator.num_pages)
 
     context = {
         "title": category.title,
+        "categories_list": categories_list,
+        "page_request_var": page_request_var,
         "posts": posts,
     }
     return render(request, "post_category.html", context)

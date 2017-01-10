@@ -6,39 +6,43 @@
     <br />
     <div class="row">
         <div class="col-md-8">
-
             {% for obj in object_list %}
+                <h2>
+                    <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                </h2>
+                <p>
+                    <span class="glyphicon glyphicon-time"></span> {{ obj.publish }}
                     {% if obj.video_url %}
-                        {% video obj.video_url as my_video %}
-                            <img src="{{ my_video.thumbnail }}" class="img-responsive" />
-                            {# {% video my_video 'small' %}#}
-                        {% endvideo %}
-                    {% elif obj.image %}
-                        <img src="{{ obj.image.url }}" class="img-responsive" />
+                        <small> | VIDEO inside a post</small>
                     {% endif %}
-                    {% if obj.draft %}<h3 style="color:red;">Staff only: Draft | {% if obj.publish > today %}Future Post{% endif %}</h3>{% endif %}
-                    <h3>
-                        <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a> <small>{{ obj.publish }}</small>
-                        {% if obj.video_url %}
-                            <small> | VIDEO inside a post</small>
-                        {% endif %}
-                    </h3>
-                    <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
-                    <br />
-                    {% if obj.categories %}
-                        {% for category in obj.categories.all %}
-                            <a href="{{ category.get_absolute_url }}">{{ category }}</a>
-                        {% endfor %}
+                </p>
+
+                {% if obj.video_url %}
+                    {% video obj.video_url as my_video %}
+                        <img src="{{ my_video.thumbnail }}" class="img-responsive" />
+                        {# {% video my_video 'small' %}#}
+                    {% endvideo %}
+                {% elif obj.image %}
+                    <img src="{{ obj.image.url }}" class="img-responsive" />
+                {% endif %}
+
+                {% if obj.draft %}<h3 style="color:red;">Staff only: Draft | {% if obj.publish > today %}Future Post{% endif %}</h3>{% endif %}
+                <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
+                <br />
+                {% if obj.categories %}
+                    {% for category in obj.categories.all %}
+                        <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
+                    {% endfor %}
+                {% endif %}
+                <br />
+                <br />
+                <p>
+                    <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+                        <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
                     {% endif %}
-                    <br />
-                    <br />
-                    <p>
-                        <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
-                        {% if request.user.is_authenticated %}
-                            <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
-                            <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
-                        {% endif %}
-                    </p>
+                </p>
                 <hr/>
 
             {% endfor %}
