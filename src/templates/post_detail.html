@@ -29,7 +29,7 @@
             <hr>
             <!-- Post Content -->
             <p>
-                {{ instance.content|linebreaks }}
+                {{ instance.content|safe }}
             </p>
             <hr/>
             {% if instance.categories %}

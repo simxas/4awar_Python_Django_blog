@@ -27,7 +27,7 @@ class PostForm(forms.ModelForm):
 class UpdateForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ["updated"]
+        exclude = ["updated", "slug"]
 
 
     def __init__ (self, *args, **kwargs):
