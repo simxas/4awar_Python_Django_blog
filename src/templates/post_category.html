@@ -26,6 +26,7 @@
                 {% elif obj.image %}
                     <img src="{{ obj.image.url }}" class="img-responsive" />
                 {% endif %}
+                
                 {% if obj.draft %}<h3 style="color:red;">Staff only: Draft | {% if obj.publish > today %}Future Post{% endif %}</h3>{% endif %}
                 <p>{{ obj.content|linebreaks|truncatechars:120 }}</p>
                 <br />

@@ -66,6 +66,7 @@ def post_detail(request, slug):
 
 # POSTS by CATEGORY
 def post_category(request, slug):
+    today = timezone.now().date()
     categories_list = Category.objects.all()
     category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.active(category=category)
@@ -89,6 +90,7 @@ def post_category(request, slug):
         "categories_list": categories_list,
         "page_request_var": page_request_var,
         "posts": posts,
+        "today": today,
     }
     return render(request, "post_category.html", context)
 
