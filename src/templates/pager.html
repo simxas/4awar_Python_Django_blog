@@ -1,0 +1,16 @@
+<!-- Pager -->
+<ul class="pager">
+    <li class="previous">
+        {% if posts.has_previous %}
+            <a href="?{{ page_request_var }}={{ posts.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&larr; Newer</a>
+        {% endif %}
+    </li>
+    <span class="text-center current">
+        Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+    </span>
+    <li class="next">
+        {% if posts.has_next %}
+            <a href="?{{ page_request_var }}={{ posts.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Older &rarr;</a>
+        {% endif %}
+    </li>
+</ul>
