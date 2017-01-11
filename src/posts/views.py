@@ -8,8 +8,40 @@ from django.conf import settings
 import shutil
 from django.utils import timezone
 
+# CUSTOM FUNCTIONS
+def search(request, queryset_list, query):
+    today = timezone.now().date()
+    categories_list = Category.objects.all()
+    queryset_list = queryset_list.filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        Q(author__first_name__icontains=query) |
+        Q(author__last_name__icontains=query)
+        ).distinct()
+
+    paginator = Paginator(queryset_list, 3)
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        queryset = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        queryset = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        queryset = paginator.page(paginator.num_pages)
+    context = {
+        "title": query,
+        "categories_list": categories_list,
+        "page_request_var": page_request_var,
+        "posts": queryset,
+        "today": today,
+    }
+    return {"template": "post_search.html", "context": context}
+
 # LIST ALL POSTS
 def post_list(request):
+    print("post list")
     today = timezone.now().date()
     queryset_list = Post.objects.active()
     categories_list = Category.objects.all()
@@ -18,12 +50,8 @@ def post_list(request):
     # using this for search
     query = request.GET.get("q")
     if query:
-        queryset_list = queryset_list.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(author__first_name__icontains=query) |
-            Q(author__last_name__icontains=query)
-            ).distinct()
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
 
     paginator = Paginator(queryset_list, 3)
     page_request_var = "page"
@@ -49,9 +77,20 @@ def post_list(request):
 
 # CHECK POST DETAILS
 def post_detail(request, slug):
+    print("post detail")
     today = timezone.now().date()
     instance = get_object_or_404(Post, slug=slug)
     categories_list = Category.objects.all()
+
+    # searc part
+    queryset_list = Post.objects.active()
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Post.objects.all()
+    query = request.GET.get("q")
+    if query:
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
+
     if instance.draft or instance.publish > timezone.now().date():
         if not request.user.is_staff or not request.user.is_superuser:
             raise Http404
@@ -66,9 +105,20 @@ def post_detail(request, slug):
 
 # POSTS by CATEGORY
 def post_category(request, slug):
+    print("post category")
     today = timezone.now().date()
     categories_list = Category.objects.all()
     category = get_object_or_404(Category, slug=slug)
+
+    # searc part
+    queryset_list = Post.objects.active()
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Post.objects.all()
+    query = request.GET.get("q")
+    if query:
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
+
     posts = Post.objects.active(category=category)
     if request.user.is_staff or request.user.is_superuser:
         posts = Post.objects.filter(categories=category)
