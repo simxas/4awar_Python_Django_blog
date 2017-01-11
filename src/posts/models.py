@@ -12,6 +12,9 @@ def upload_location(instance, filename):
 # Create your models here.
 class PostManager(models.Manager):
     def active(self, *args, **kwargs):
+        if kwargs["category"]:
+            category = kwargs["category"]
+            return super(PostManager, self).filter(categories=category).filter(draft=False).filter(publish__lte=timezone.now())
         return super(PostManager, self).filter(draft=False).filter(publish__lte=timezone.now())
 
 class Category(models.Model):

@@ -66,15 +66,11 @@ def post_detail(request, slug):
 
 # POSTS by CATEGORY
 def post_category(request, slug):
-    # queryset_list = Post.objects.active()
-    # categories_list = Category.objects.all()
-    # if request.user.is_staff or request.user.is_superuser:
-    #     queryset_list = Post.objects.all()
-
-
-    category = get_object_or_404(Category, slug=slug)
     categories_list = Category.objects.all()
-    posts = Post.objects.filter(categories=category)
+    category = get_object_or_404(Category, slug=slug)
+    posts = Post.objects.active(category=category)
+    if request.user.is_staff or request.user.is_superuser:
+        posts = Post.objects.filter(categories=category)
 
     paginator = Paginator(posts, 3) # Show 25 contacts per page
     page_request_var = "page"
