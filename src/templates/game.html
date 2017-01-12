@@ -30,7 +30,7 @@
             {% if request.user.is_authenticated %}
                 <br/>
                 <br/>
-                <a href="{{ instance.get_absolute_url }}game_update" class="btn btn-primary" role="button">Edit</a>
+                <a href="{{ instance.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
                 <a href="{{ instance.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
             {% endif %}
             <hr/>
@@ -43,6 +43,6 @@
             <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
 
         </div><!-- col-lg-8 -->
-        {% include 'sidebar.html' %}
+        {% include 'games_sidebar.html' %}
     </div><!-- main row -->
 {% endblock content %}

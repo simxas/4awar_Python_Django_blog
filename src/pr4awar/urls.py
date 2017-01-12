@@ -22,6 +22,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^posts/', include('posts.urls', namespace='posts')),
+    url(r'^games/', include('games.urls', namespace='games')),
 ]
 
 if settings.DEBUG:

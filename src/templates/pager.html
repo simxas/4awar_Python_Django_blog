@@ -4,13 +4,24 @@
         {% if posts.has_previous %}
             <a href="?{{ page_request_var }}={{ posts.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&larr; Newer</a>
         {% endif %}
+        {% if games.has_previous %}
+            <a href="?{{ page_request_var }}={{ games.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&larr; Newer</a>
+        {% endif %}
     </li>
     <span class="text-center current">
-        Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        {% if games.number %}
+            Page {{ games.number }} of {{ games.paginator.num_pages }}.
+        {% endif %}
+        {% if posts.number %}
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        {% endif %}
     </span>
     <li class="next">
         {% if posts.has_next %}
             <a href="?{{ page_request_var }}={{ posts.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Older &rarr;</a>
+        {% endif %}
+        {% if games.has_next %}
+            <a href="?{{ page_request_var }}={{ games.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Older &rarr;</a>
         {% endif %}
     </li>
 </ul>
