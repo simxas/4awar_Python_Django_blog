@@ -27,7 +27,7 @@
                 {% endif %}
 
                 {% if obj.draft %}<h3 style="color:red;">Staff only: Draft | {% if obj.publish > today %}Future Post{% endif %}</h3>{% endif %}
-                <p>{{ obj.content|safe|truncatechars:120 }}</p>
+                <p>{{ obj.content|safe|truncatechars:100 }}</p>
                 <br />
                 {% if obj.categories %}
                     {% for category in obj.categories.all %}

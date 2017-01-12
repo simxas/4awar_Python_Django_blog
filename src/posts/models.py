@@ -64,8 +64,30 @@ class Post(models.Model):
 class CategoryToPost(models.Model):
     post = models.ForeignKey(Post)
     category = models.ForeignKey(Category)
-    # class Meta:
-    #      unique_together = ('post', 'category')
+
+class Game(models.Model):
+    title = models.CharField(max_length=120)
+    slug = models.SlugField(unique=True)
+    image = models.ImageField(upload_to=upload_location, null=True, blank=True, width_field="width_field", height_field="height_field")
+    height_field = models.IntegerField(default=0, null=True, blank=True,)
+    width_field = models.IntegerField(default=0, null=True, blank=True,)
+    directory = models.CharField(max_length=120, null=True)
+    description = models.TextField()
+    instructions = models.TextField()
+    iframe = models.CharField(max_length=255)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+    timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("posts:game", kwargs={"slug": self.slug})
+
+    class Meta:
+        verbose_name_plural = "Games"
+        ordering = ["-timestamp", "-updated"]
+
 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)
@@ -84,3 +106,4 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
         instance.directory = instance.slug
 
 pre_save.connect(pre_save_post_receiver, sender=Post)
+pre_save.connect(pre_save_post_receiver, sender=Game)

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="page-header">{{ title }}</h1>
+    <br />
+    <div class="row">
+        <div class="col-md-8">
+            {% for obj in posts %}
+                <h2>
+                    <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                </h2>
+
+                {% if obj.image %}
+                    <img src="{{ obj.image.url }}" class="img-responsive" />
+                {% endif %}
+
+                <p>{{ obj.description|safe|truncatechars:120 }}</p>
+                <br />
+                <br />
+                <p>
+                    <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">View <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    {% if request.user.is_authenticated %}
+                        <a href="{{ obj.get_absolute_url }}edit_game" class="btn btn-primary" role="button">Edit</a>
+                        <a href="{{ obj.get_absolute_url }}delete_game" class="btn btn-primary" role="button">Delete</a>
+                    {% endif %}
+                </p>
+                <hr/>
+
+            {% endfor %}
+
+            {% include 'pager.html' %}
+
+        </div><!-- col-md-8 -->
+
+
+        {% include 'sidebar.html' %}
+
+    </div><!-- main row -->
+{% endblock content %}

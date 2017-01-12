@@ -2,7 +2,7 @@ from django.contrib import admin
 from embed_video.admin import AdminVideoMixin
 
 # Register your models here.
-from .models import Post, Category, CategoryToPost
+from .models import Post, Category, CategoryToPost, Game
 
 class CategoryToPostInline(admin.TabularInline):
     model = CategoryToPost
@@ -25,5 +25,13 @@ class CategoryModelAdmin(AdminVideoMixin, admin.ModelAdmin):
     class Meta:
         model = Category
 
+class GameModelAdmin(AdminVideoMixin, admin.ModelAdmin):
+    # prepopulated_fields = {"slug": ("title",)}
+    list_display = ["title"]
+    list_editable = ["title"]
+    class Meta:
+        model = Game
+
 admin.site.register(Post, PostModelAdmin)
 admin.site.register(Category, CategoryModelAdmin)
+admin.site.register(Game, GameModelAdmin)
