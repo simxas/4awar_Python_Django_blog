@@ -27,13 +27,14 @@ class PostForm(forms.ModelForm):
 class UpdateForm(forms.ModelForm):
     class Meta:
         model = Post
-        exclude = ["updated", "slug"]
+        exclude = ["updated", "directory"]
 
 
     def __init__ (self, *args, **kwargs):
         # foo = kwargs.pop("instance")
         all_categories = Category.objects.all()
         instance = kwargs["instance"]
+
         inst_categories = instance.categories.all()
         categories_list = []
         rm_categories_list = []
@@ -67,3 +68,7 @@ class UpdateForm(forms.ModelForm):
         self.fields["video_url"] = forms.URLField(required=False)
         self.fields["draft"] = forms.BooleanField(required=False)
         self.fields["publish"] = forms.DateField(widget=forms.SelectDateWidget())
+        if instance.image:
+            del self.fields["image"]
+        else:
+            del self.fields["image_rm"]

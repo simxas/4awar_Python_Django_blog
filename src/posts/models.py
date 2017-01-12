@@ -7,7 +7,10 @@ from django.utils import timezone
 from embed_video.fields import EmbedVideoField
 
 def upload_location(instance, filename):
-    return "{0}/{1}".format(instance.slug, filename)
+    if instance.directory == "":
+        return "{0}/{1}".format(instance.slug, filename)
+    else:
+        return "{0}/{1}".format(instance.directory, filename)
 
 # Create your models here.
 class PostManager(models.Manager):
@@ -35,6 +38,7 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
+    directory = models.CharField(max_length=120, null=True)
     image = models.ImageField(upload_to=upload_location, null=True, blank=True, width_field="width_field", height_field="height_field")
     video_url = EmbedVideoField(null=True, blank=True)  # same like models.URLField()
     height_field = models.IntegerField(default=0, null=True, blank=True,)
@@ -77,5 +81,6 @@ def create_slug(instance, new_slug=None):
 def pre_save_post_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
+        instance.directory = instance.slug
 
 pre_save.connect(pre_save_post_receiver, sender=Post)

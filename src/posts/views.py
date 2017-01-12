@@ -176,7 +176,7 @@ def post_update(request, slug):
     # form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     form = UpdateForm(request.POST or None, request.FILES or None, instance=instance)
     # destination of current image
-    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.slug)
+    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.directory)
     if form.is_valid():
         # if true then deleting old image
         if form.cleaned_data.get('image_rm'):
@@ -187,7 +187,11 @@ def post_update(request, slug):
         if form.cleaned_data.get('image') and remove_image == False:
             instance.image = form.cleaned_data.get('image')
         instance = form.save(commit=False)
-        instance.save()
+        instance.save(update_fields=[
+            "title", "slug", "image", "video_url",
+            "height_field", "width_field", "content",
+            "draft", "publish", "updated", "timestamp",
+        ])
         for category in form.cleaned_data.get('categories'):
             # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
@@ -215,7 +219,7 @@ def post_delete(request, slug=None):
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
     # removing associated image
-    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.slug)
+    dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.directory)
     shutil.rmtree(dest, ignore_errors=True)
 
     instance.delete()
