@@ -8,16 +8,44 @@ from django.conf import settings
 import shutil
 from django.utils import timezone
 
+def search(request, queryset_list, query):
+    # categories_list = Category.objects.all()
+    queryset_list = queryset_list.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query) |
+        Q(instructions__icontains=query) |
+        Q(slug__icontains=query)
+        ).distinct()
+
+    paginator = Paginator(queryset_list, 3)
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        queryset = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        queryset = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        queryset = paginator.page(paginator.num_pages)
+    context = {
+        "title": query,
+        # "categories_list": categories_list,
+        "page_request_var": page_request_var,
+        "games": queryset,
+    }
+    return {"template": "games_search.html", "context": context}
+
 # GAMES VIEW
 def games(request):
     # categories_list = Category.objects.all()
 
     # searc part
     queryset_list = Game.objects.all()
-    # query = request.GET.get("q")
-    # if query:
-    #     search_dict = search(request, queryset_list, query)
-    #     return render(request, search_dict["template"], search_dict["context"])
+    query = request.GET.get("q")
+    if query:
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
 
     paginator = Paginator(queryset_list, 3)
     page_request_var = "page"
@@ -34,7 +62,7 @@ def games(request):
     context = {
         "games": queryset,
         # "categories_list": categories_list,
-        "title": "Games Page",
+        "title": "Games",
         "page_request_var": page_request_var,
     }
 
@@ -46,13 +74,11 @@ def game_detail(request, slug):
     # categories_list = Category.objects.all()
 
     # searc part
-    # queryset_list = Post.objects.active()
-    # if request.user.is_staff or request.user.is_superuser:
-    #     queryset_list = Post.objects.all()
-    # query = request.GET.get("q")
-    # if query:
-    #     search_dict = search(request, queryset_list, query)
-    #     return render(request, search_dict["template"], search_dict["context"])
+    queryset_list = Game.objects.all()
+    query = request.GET.get("q")
+    if query:
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
 
     context = {
         # "categories_list": categories_list,
