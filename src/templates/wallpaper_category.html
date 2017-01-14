@@ -6,35 +6,35 @@
     <div class="row">
         <div class="col-md-8">
             {% for obj in wallpapers %}
-                <h2>
-                    <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
-                </h2>
-
-                {% if obj.image %}
-                    <img src="{{ obj.image.url }}" class="img-responsive" />
-                {% endif %}
-
-                <p>{{ obj.description|safe|truncatechars:100 }}</p>
-                <br />
-                {% if obj.categories %}
-                    {% for category in obj.categories.all %}
-                        <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
-                    {% endfor %}
-                {% endif %}
-                <br />
-                <br />
-                <p>
-                    <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">View <span class="glyphicon glyphicon-chevron-right"></span></a>
-                    {% if request.user.is_authenticated %}
-                        <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
-                        <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
+                    {% if obj.image %}
+                        <a href="{{ obj.image.url }}" target="_blank">
+                            <img src="{{ obj.image.url }}" class="img-responsive" />
+                        </a>
                     {% endif %}
-                </p>
-                <hr/>
-
+                    <br />
+                    <p>{{ obj.description|safe|truncatechars:100 }}</p>
+                    <br />
+                    {% if obj.categories %}
+                        {% for category in obj.categories.all %}
+                            <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
+                        {% endfor %}
+                    {% endif %}
+                    <br />
+                    <br />
+                    <p>
+                        {% if request.user.is_authenticated %}
+                            <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+                            <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
+                        {% endif %}
+                    </p>
+                    <hr/>
             {% endfor %}
 
-            {% include 'pager.html' %}
+            <div class="row">
+                <div class="col-md-8">
+                    {% include 'pager.html' %}
+                </div>
+            </div>
 
         </div><!-- col-md-8 -->
 
