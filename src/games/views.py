@@ -47,7 +47,7 @@ def games(request):
         search_dict = search(request, queryset_list, query)
         return render(request, search_dict["template"], search_dict["context"])
 
-    paginator = Paginator(queryset_list, 3)
+    paginator = Paginator(queryset_list, 6)
     page_request_var = "page"
     page = request.GET.get(page_request_var)
     try:
