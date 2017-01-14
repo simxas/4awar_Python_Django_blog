@@ -16,6 +16,12 @@
 
                 <p>{{ obj.description|safe|truncatechars:100 }}</p>
                 <br />
+                {% if obj.categories %}
+                    {% for category in obj.categories.all %}
+                        <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
+                    {% endfor %}
+                {% endif %}
+                <br />
                 <br />
                 <p>
                     <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">View <span class="glyphicon glyphicon-chevron-right"></span></a>

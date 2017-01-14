@@ -12,6 +12,19 @@ def upload_location(instance, filename):
     else:
         return "{0}/{1}".format(instance.directory, filename)
 
+class Category(models.Model):
+    title = models.CharField(max_length=120)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("games:category", kwargs={"slug": self.slug})
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
 # Create your models here.
 class Game(models.Model):
     title = models.CharField(max_length=120)
@@ -25,6 +38,7 @@ class Game(models.Model):
     iframe = models.CharField(max_length=255)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     timestamp = models.DateTimeField(auto_now=False, auto_now_add=True)
+    categories = models.ManyToManyField(Category, blank=True, null=True, through='CategoryToGame')
 
     def __str__(self):
         return self.title
@@ -36,6 +50,9 @@ class Game(models.Model):
         verbose_name_plural = "Games"
         ordering = ["-timestamp", "-updated"]
 
+class CategoryToGame(models.Model):
+    game = models.ForeignKey(Game)
+    category = models.ForeignKey(Category)
 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.title)

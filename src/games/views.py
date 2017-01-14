@@ -1,6 +1,6 @@
 from django.http import Http404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Game
+from .models import Game, Category, CategoryToGame
 from .forms import GameForm, UpdateGameForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -9,7 +9,7 @@ import shutil
 from django.utils import timezone
 
 def search(request, queryset_list, query):
-    # categories_list = Category.objects.all()
+    categories_list = Category.objects.all()
     queryset_list = queryset_list.filter(
         Q(title__icontains=query) |
         Q(description__icontains=query) |
@@ -30,7 +30,7 @@ def search(request, queryset_list, query):
         queryset = paginator.page(paginator.num_pages)
     context = {
         "title": query,
-        # "categories_list": categories_list,
+        "categories_list": categories_list,
         "page_request_var": page_request_var,
         "games": queryset,
     }
@@ -38,7 +38,7 @@ def search(request, queryset_list, query):
 
 # GAMES VIEW
 def games(request):
-    # categories_list = Category.objects.all()
+    categories_list = Category.objects.all()
 
     # searc part
     queryset_list = Game.objects.all()
@@ -61,7 +61,7 @@ def games(request):
 
     context = {
         "games": queryset,
-        # "categories_list": categories_list,
+        "categories_list": categories_list,
         "title": "Games",
         "page_request_var": page_request_var,
     }
@@ -71,7 +71,7 @@ def games(request):
 # GAME VIEW
 def game_detail(request, slug):
     instance = get_object_or_404(Game, slug=slug)
-    # categories_list = Category.objects.all()
+    categories_list = Category.objects.all()
 
     # searc part
     queryset_list = Game.objects.all()
@@ -81,10 +81,44 @@ def game_detail(request, slug):
         return render(request, search_dict["template"], search_dict["context"])
 
     context = {
-        # "categories_list": categories_list,
+        "categories_list": categories_list,
         "instance": instance,
     }
     return render(request, "game.html", context)
+
+# GAME by CATEGORY
+def game_category(request, slug):
+    categories_list = Category.objects.all()
+    category = get_object_or_404(Category, slug=slug)
+
+    # searc part
+    queryset_list = Game.objects.all()
+    query = request.GET.get("q")
+    if query:
+        search_dict = search(request, queryset_list, query)
+        return render(request, search_dict["template"], search_dict["context"])
+
+    games = Game.objects.filter(categories=category)
+
+    paginator = Paginator(games, 3) # Show 25 contacts per page
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        games = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        games = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        games = paginator.page(paginator.num_pages)
+
+    context = {
+        "title": category.title,
+        "categories_list": categories_list,
+        "page_request_var": page_request_var,
+        "games": games,
+    }
+    return render(request, "game_category.html", context)
 
 # CREATE GAME
 def game_create(request):
@@ -95,6 +129,14 @@ def game_create(request):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
+
+        for category in form.cleaned_data.get('categories'):
+            # categoryToPost = CategoryToPost(post=instance, category=category)
+            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
+            catg = get_object_or_404(Category, title=category)
+            categoryToGame = CategoryToGame(game=instance, category=catg)
+
+            categoryToGame.save()
 
         return HttpResponseRedirect(instance.get_absolute_url())
     context = {
@@ -124,6 +166,18 @@ def game_update(request, slug):
             "title", "slug", "image", "height_field", "width_field", "description",
             "instructions", "updated", "timestamp",
         ])
+
+        for category in form.cleaned_data.get('categories'):
+            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
+            catg = get_object_or_404(Category, title=category)
+            categoryToGame = CategoryToGame(game=instance, category=catg)
+
+            categoryToGame.save()
+
+        for cat in form.cleaned_data.get('rm_categories'):
+            category_rm = get_object_or_404(Category, title=cat)
+            categoryToGame_rm = CategoryToGame.objects.get(game=instance, category=category_rm)
+            categoryToGame_rm.delete()
 
         return HttpResponseRedirect(instance.get_absolute_url())
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="page-header">Searching for: {{ title }}</h1>
+    <h3>Category: {{ title }}</h3>
     <br />
     <div class="row">
         <div class="col-md-8">
@@ -14,7 +14,7 @@
                     <img src="{{ obj.image.url }}" class="img-responsive" />
                 {% endif %}
 
-                <p>{{ obj.description|safe|truncatechars:120 }}</p>
+                <p>{{ obj.description|safe|truncatechars:100 }}</p>
                 <br />
                 {% if obj.categories %}
                     {% for category in obj.categories.all %}

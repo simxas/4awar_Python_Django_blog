@@ -27,6 +27,14 @@
             <p>
                 {{ instance.instructions|safe }}
             </p>
+            <br/>
+            {% if instance.categories %}
+                {% for category in instance.categories.all %}
+                    <a href="{{ category.get_absolute_url }}">{{ category }}{% if instance.categories.count > 1 %} | {% endif %}</a>
+                {% endfor %}
+            {% endif %}
+            <br />
+            <br />
             {% if request.user.is_authenticated %}
                 <br/>
                 <br/>
