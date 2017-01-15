@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Title -->
+            <h1>{{ instance.title }}</h1>
+            <hr/>
+            {% if instance.iframe %}
+                {{ instance.iframe|safe }}
+            {% endif %}
+            <hr>
+            <!-- Post Content -->
+            <label>Description:</label>
+            <div>
+                <p>
+                    {{ instance.description|safe }}
+                </p>
+            </div>
+            <hr/>
+            <br/>
+            {% if request.user.is_authenticated %}
+                <br/>
+                <br/>
+                <a href="{{ instance.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+                <a href="{{ instance.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
+            {% endif %}
+            <hr/>
+            <!-- Facebook like and share -->
+            <p>
+                <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
+            </p>
+
+            <!-- Facebook comments-->
+            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+
+        </div><!-- col-lg-8 -->
+    </div><!-- main row -->
+{% endblock content %}

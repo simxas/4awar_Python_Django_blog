@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^posts/', include('posts.urls', namespace='posts')),
     url(r'^games/', include('games.urls', namespace='games')),
     url(r'^wallpapers/', include('wallpapers.urls', namespace='wallpapers')),
+    url(r'^threed/', include('threeD.urls', namespace='threed')),
 ]
 
 if settings.DEBUG:

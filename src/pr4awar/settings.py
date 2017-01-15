@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'posts',
     'games',
     'wallpapers',
+    'threeD',
     # Third party apps
     'embed_video',
 ]
