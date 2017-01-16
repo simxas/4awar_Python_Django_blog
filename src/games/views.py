@@ -6,7 +6,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.conf import settings
 import shutil
-from django.utils import timezone
 
 def search(request, queryset_list, query):
     categories_list = Category.objects.all()
@@ -17,16 +16,14 @@ def search(request, queryset_list, query):
         Q(slug__icontains=query)
         ).distinct()
 
-    paginator = Paginator(queryset_list, 3)
+    paginator = Paginator(queryset_list, 6)
     page_request_var = "page"
     page = request.GET.get(page_request_var)
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         queryset = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         queryset = paginator.page(paginator.num_pages)
     context = {
         "title": query,
@@ -53,10 +50,8 @@ def games(request):
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         queryset = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         queryset = paginator.page(paginator.num_pages)
 
     context = {
@@ -100,16 +95,14 @@ def game_category(request, slug):
 
     games = Game.objects.filter(categories=category)
 
-    paginator = Paginator(games, 3) # Show 25 contacts per page
+    paginator = Paginator(games, 6)
     page_request_var = "page"
     page = request.GET.get(page_request_var)
     try:
         games = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         games = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         games = paginator.page(paginator.num_pages)
 
     context = {
@@ -131,8 +124,6 @@ def game_create(request):
         instance.save()
 
         for category in form.cleaned_data.get('categories'):
-            # categoryToPost = CategoryToPost(post=instance, category=category)
-            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
             categoryToGame = CategoryToGame(game=instance, category=catg)
 
@@ -143,7 +134,6 @@ def game_create(request):
         "form": form,
     }
     return render(request, "game_form.html", context)
-
 
 # UPDATE GAME
 def game_update(request, slug):
@@ -158,7 +148,6 @@ def game_update(request, slug):
             remove_image = True
             instance.image = ""
             shutil.rmtree(dest, ignore_errors=True)
-        # if new image uploaded
         if form.cleaned_data.get('image') and remove_image == False:
             instance.image = form.cleaned_data.get('image')
         instance = form.save(commit=False)
@@ -168,7 +157,6 @@ def game_update(request, slug):
         ])
 
         for category in form.cleaned_data.get('categories'):
-            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
             categoryToGame = CategoryToGame(game=instance, category=catg)
 
@@ -193,7 +181,6 @@ def game_delete(request, slug=None):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Game, slug=slug)
-    # removing associated image
     dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.directory)
     shutil.rmtree(dest, ignore_errors=True)
 

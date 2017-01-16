@@ -18,9 +18,11 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpResponseRedirect
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$', lambda r: HttpResponseRedirect('posts/')),
     url(r'^posts/', include('posts.urls', namespace='posts')),
     url(r'^games/', include('games.urls', namespace='games')),
     url(r'^wallpapers/', include('wallpapers.urls', namespace='wallpapers')),

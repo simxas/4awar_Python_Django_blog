@@ -25,10 +25,8 @@ def search(request, queryset_list, query):
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         queryset = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         queryset = paginator.page(paginator.num_pages)
     context = {
         "title": query,
@@ -46,7 +44,6 @@ def post_list(request):
     categories_list = Category.objects.all()
     if request.user.is_staff or request.user.is_superuser:
         queryset_list = Post.objects.all()
-    # using this for search
     query = request.GET.get("q")
     if query:
         search_dict = search(request, queryset_list, query)
@@ -58,10 +55,8 @@ def post_list(request):
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         queryset = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         queryset = paginator.page(paginator.num_pages)
 
     context = {
@@ -121,16 +116,14 @@ def post_category(request, slug):
     if request.user.is_staff or request.user.is_superuser:
         posts = Post.objects.filter(categories=category)
 
-    paginator = Paginator(posts, 3) # Show 25 contacts per page
+    paginator = Paginator(posts, 3)
     page_request_var = "page"
     page = request.GET.get(page_request_var)
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
         posts = paginator.page(1)
     except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
         posts = paginator.page(paginator.num_pages)
 
     context = {
@@ -153,8 +146,6 @@ def post_create(request):
         instance.author = request.user
         instance.save()
         for category in form.cleaned_data.get('categories'):
-            # categoryToPost = CategoryToPost(post=instance, category=category)
-            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
             categoryToPost = CategoryToPost(post=instance, category=catg)
 
@@ -171,17 +162,13 @@ def post_update(request, slug):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
-    # form = PostForm(request.POST or None, request.FILES or None, instance=instance)
     form = UpdateForm(request.POST or None, request.FILES or None, instance=instance)
-    # destination of current image
     dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.directory)
     if form.is_valid():
-        # if true then deleting old image
         if form.cleaned_data.get('image_rm'):
             remove_image = True
             instance.image = ""
             shutil.rmtree(dest, ignore_errors=True)
-        # if new image uploaded
         if form.cleaned_data.get('image') and remove_image == False:
             instance.image = form.cleaned_data.get('image')
         instance = form.save(commit=False)
@@ -191,7 +178,6 @@ def post_update(request, slug):
             "draft", "publish", "updated", "timestamp",
         ])
         for category in form.cleaned_data.get('categories'):
-            # fixing error "Cannot assign "'Tanks'": "CategoryToPost.category" must be a "Category" instance."
             catg = get_object_or_404(Category, title=category)
             categoryToPost = CategoryToPost(post=instance, category=catg)
 
@@ -216,7 +202,6 @@ def post_delete(request, slug=None):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
     instance = get_object_or_404(Post, slug=slug)
-    # removing associated image
     dest = "{0}/{1}".format(settings.MEDIA_ROOT, instance.directory)
     shutil.rmtree(dest, ignore_errors=True)
 

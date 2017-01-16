@@ -17,7 +17,6 @@ class UpdateTankForm(forms.ModelForm):
 
 
     def __init__ (self, *args, **kwargs):
-        # foo = kwargs.pop("instance")
         instance = kwargs["instance"]
 
         super(UpdateTankForm, self).__init__(*args, **kwargs)

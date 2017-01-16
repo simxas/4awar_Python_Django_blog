@@ -1,7 +1,6 @@
 from django.contrib import admin
 from embed_video.admin import AdminVideoMixin
 
-# Register your models here.
 from .models import Post, Category, CategoryToPost
 
 class CategoryToPostInline(admin.TabularInline):

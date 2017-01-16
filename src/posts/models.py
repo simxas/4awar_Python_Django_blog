@@ -12,7 +12,6 @@ def upload_location(instance, filename):
     else:
         return "{0}/{1}".format(instance.directory, filename)
 
-# Create your models here.
 class PostManager(models.Manager):
     def active(self, *args, **kwargs):
         if "category" in kwargs:

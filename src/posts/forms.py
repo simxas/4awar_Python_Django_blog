@@ -31,23 +31,19 @@ class UpdateForm(forms.ModelForm):
 
 
     def __init__ (self, *args, **kwargs):
-        # foo = kwargs.pop("instance")
-        all_categories = Category.objects.all()
         instance = kwargs["instance"]
 
+        all_categories = Category.objects.all()
         inst_categories = instance.categories.all()
         categories_list = []
         rm_categories_list = []
-        # check if post has already some cateogires assigned to it
         if len(inst_categories) != 0:
             for catg in inst_categories:
                 list_b = [catg.title, catg.title]
                 rm_categories_list.append(list_b)
 
             for category in all_categories:
-                # if category wont exist in assigned categories list then add it to the list to show in form
                 if category not in inst_categories:
-                    # needs to be done in order to create a tuple later
                     list_a = [category.title, category.title]
                     categories_list.append(list_a)
         else:

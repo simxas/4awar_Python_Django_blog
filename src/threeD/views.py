@@ -1,12 +1,7 @@
 from django.http import Http404, HttpResponseRedirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Tank
 from .forms import TankForm, UpdateTankForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
-from django.conf import settings
-import shutil
-from django.utils import timezone
 
 # TANK VIEW
 def tank_360(request, slug):
@@ -32,7 +27,6 @@ def tank_create(request):
         "form": form,
     }
     return render(request, "tank_form.html", context)
-
 
 # UPDATE TANK
 def tank_update(request, slug):

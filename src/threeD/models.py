@@ -1,10 +1,7 @@
 from django.db import models
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
-from django.utils import timezone
-from embed_video.fields import EmbedVideoField
 
 class Tank(models.Model):
     title = models.CharField(max_length=120)
