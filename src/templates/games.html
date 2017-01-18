@@ -3,46 +3,50 @@
 {% block content %}
     <h1 class="page-header">{{ title }}</h1>
     <br />
-    <div class="row">
-        <div class="col-md-8">
-            {% for obj in games %}
-                    <h3>
-                        <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
-                    </h3>
+    <div id="page" class="fluid-container">
+        <div id="content" class="col-xs-12 col-sm-9">
+            <div class="fluid-container">
+                {% for obj in games %}
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="content-box">
+                            <h3>
+                                <a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                            </h3>
 
-                    {% if obj.image %}
-                    <a href="{{ obj.get_absolute_url }}">
-                        <img src="{{ obj.image.url }}" class="img-responsive" />
-                    </a>
-                    {% endif %}
-                    <br />
-                    <p>{{ obj.description|safe|truncatechars:100 }}</p>
-                    <br />
-                    {% if obj.categories %}
-                        {% for category in obj.categories.all %}
-                            <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
-                        {% endfor %}
-                    {% endif %}
-                    <br />
-                    <br />
-                    <p>
-                        <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">Play <span class="glyphicon glyphicon-chevron-right"></span></a>
-                        {% if request.user.is_authenticated %}
-                            <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
-                            <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
-                        {% endif %}
-                    </p>
-                    <hr/>
-            {% endfor %}
+                            {% if obj.image %}
+                                <a href="{{ obj.get_absolute_url }}">
+                                    <img src="{{ obj.image.url }}" class="img-responsive" />
+                                </a>
+                            {% endif %}
+                            <br />
+                            <p>{{ obj.description|safe|truncatechars:100 }}</p>
+                            <br />
+                            {% if obj.categories %}
+                                {% for category in obj.categories.all %}
+                                    <a href="{{ category.get_absolute_url }}">{{ category }}{% if obj.categories.count > 1 %} | {% endif %}</a>
+                                {% endfor %}
+                            {% endif %}
+                            <br />
+                            <br />
+                            <p>
+                                <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">Play <span class="glyphicon glyphicon-chevron-right"></span></a>
+                                {% if request.user.is_authenticated %}
+                                    <a href="{{ obj.get_absolute_url }}edit" class="btn btn-primary" role="button">Edit</a>
+                                    <a href="{{ obj.get_absolute_url }}delete" class="btn btn-primary" role="button">Delete</a>
+                                {% endif %}
+                            </p>
+                            <hr/>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
             <div class="row">
                 <div class="col-md-8">
                     {% include 'pager.html' %}
                 </div>
             </div>
 
-        </div><!-- col-md-8 -->
-
+        </div>
         {% include 'games_sidebar.html' %}
-
-    </div><!-- main row -->
+    </div>
 {% endblock content %}

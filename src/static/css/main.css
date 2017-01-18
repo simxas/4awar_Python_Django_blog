@@ -1,0 +1,27 @@
+#page {
+	width: 100%;
+}
+
+#side-navigation {
+	min-height: 700px;
+	/*background-color: grey;*/
+}
+.content-box {
+	background-color: rgb(224,224,224);
+	text-align: center;
+	padding: 10px;
+	box-sizing: border-box;
+	min-height: 230px;
+    height: 536px;
+	margin:20px 0;
+}
+
+
+.desktop {
+	display: none;
+}
+@media screen and (min-width: 768px) {
+	.desktop {
+		display: block;
+	}
+}
