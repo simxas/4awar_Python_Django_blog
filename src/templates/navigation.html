@@ -28,6 +28,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'contact' %}">Contact</a></li>
                 {% if request.user.is_authenticated %}
                 <li><a href="{% url 'posts:create' %}">Create new Post</a></li>
                 <li><a href="{% url 'games:create' %}">Add new Game</a></li>

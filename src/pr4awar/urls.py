@@ -20,8 +20,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 
+from .views import (contact)
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^contact/$', contact, name='contact'),
     url(r'^$', lambda r: HttpResponseRedirect('posts/')),
     url(r'^posts/', include('posts.urls', namespace='posts')),
     url(r'^games/', include('games.urls', namespace='games')),
